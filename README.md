@@ -38,11 +38,17 @@
   + Dave    ports: 10014 (gRPC), 9744 (p2p), 8094 (REST)
   + Erin    ports: 10015 (gRPC), 9745 (p2p), 8095 (REST)
   + Fabia   ports: 10016 (gRPC), 9746 (p2p), 8096 (REST)
-* 1 `CLN` node:
-  + Rusty ports: 9747 (p2p)
+* 3 `CLN` nodes:
+  + Nifty ports: 9747 (p2p)
+  + Rusty ports: 9748 (p2p)
+  + Snyke ports: 9749 (p2p)
 
 ## Usage
 
-* `rt restart`: Restart everything, completely wiping all data
+* `rt help`: Show available commands
+* `rt info`: Show network information
+* `rt fund <node> <x>`: Send `<x>` BTC to `<node>` on-chain
 * `rt mine <x>`: Mine `x` blocks. If `x` is not specified, mines 6 blocks by default
+* `rt start`: Start everything
+* `rt restart`: Restart everything, completely wiping all data
 * `rt stop`: Stop and remove everything

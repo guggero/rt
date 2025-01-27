@@ -43,6 +43,14 @@ function reg_fabia() {
   docker exec -ti fabia lncli --network regtest "$@"
 }
 
+function reg_nifty() {
+  docker exec -ti nifty lightning-cli --network regtest "$@"
+}
+
 function reg_rusty() {
   docker exec -ti rusty lightning-cli --network regtest "$@"
+}
+
+function reg_snyke() {
+  docker exec -ti snyke lightning-cli --network regtest "$@"
 }

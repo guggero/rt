@@ -5,10 +5,10 @@ services:
     container_name: bitcoind
     restart: unless-stopped
     ports:
-      - 18443:18443
-      - 18444:18444
-      - 28332:28332
-      - 28333:28333
+      - "18443:18443"
+      - "18444:18444"
+      - "28332:28332"
+      - "28333:28333"
     networks:
       regtest:
         aliases:
@@ -39,7 +39,7 @@ services:
     container_name: electrs
     restart: unless-stopped
     ports:
-      - 3004:3000
+      - "3004:3000"
     networks:
       - regtest
     environment:
@@ -67,7 +67,7 @@ services:
     container_name: esplora
     restart: unless-stopped
     ports:
-      - 3002:5000
+      - "3002:5000"
     networks:
       - regtest
     environment:
@@ -81,7 +81,7 @@ services:
     restart: unless-stopped
     command: -c ssl=on -c ssl_cert_file=/temp/cert/server.crt -c ssl_key_file=/temp/cert/server.key
     ports:
-      - 5432:5432/tcp
+      - "5432:5432/tcp"
     env_file:
       - database.env
     volumes:
@@ -94,10 +94,10 @@ services:
     container_name: alice 
     restart: unless-stopped
     ports:
-      - 10011:10009
-      - 9741:9735
-      - 8091:8080
-      - 8443:8443
+      - "10011:10009"
+      - "9741:9735"
+      - "8091:8080"
+      - "8443:8443"
     networks:
       regtest:
         aliases:
@@ -155,10 +155,10 @@ services:
     container_name: bob 
     restart: unless-stopped
     ports:
-      - 10012:10009
-      - 9742:9735
-      - 8092:8080
-      - 8444:8443
+      - "10012:10009"
+      - "9742:9735"
+      - "8092:8080"
+      - "8444:8443"
     networks:
       regtest:
         aliases:
@@ -217,9 +217,9 @@ services:
     container_name: charlie 
     restart: unless-stopped
     ports:
-      - 10013:10009
-      - 9743:9735
-      - 8093:8080
+      - "10013:10009"
+      - "9743:9735"
+      - "8093:8080"
     networks:
       regtest:
         aliases:
@@ -254,9 +254,9 @@ services:
     container_name: dave 
     restart: unless-stopped
     ports:
-      - 10014:10009
-      - 9744:9735
-      - 8094:8080
+      - "10014:10009"
+      - "9744:9735"
+      - "8094:8080"
     networks:
       regtest:
         aliases:
@@ -291,9 +291,9 @@ services:
     container_name: erin
     restart: unless-stopped
     ports:
-      - 10015:10009
-      - 9745:9735
-      - 8095:8080
+      - "10015:10009"
+      - "9745:9735"
+      - "8095:8080"
     networks:
       regtest:
         aliases:
@@ -333,9 +333,9 @@ services:
     container_name: fabia
     restart: unless-stopped
     ports:
-      - 10016:10009
-      - 9746:9735
-      - 8096:8080
+      - "10016:10009"
+      - "9746:9735"
+      - "8096:8080"
     networks:
       regtest:
         aliases:
@@ -369,13 +369,34 @@ services:
       - "--protocol.zero-conf"
       - "--maxchansize=2100000000000000"
 
+  nifty:
+    image: elementsproject/lightningd:v24.11.1
+    container_name: nifty
+    restart: unless-stopped
+    ports:
+      - "9747:9735"
+    networks:
+      - regtest
+    volumes:
+      - "nifty:/root/.lightning"
+    depends_on:
+      - bitcoind
+    command:
+      - "--bitcoin-rpcconnect=bitcoind"
+      - "--bitcoin-rpcuser=lightning"
+      - "--bitcoin-rpcpassword=lightning"
+      - "--network=regtest"
+      - "--plugin-dir=/usr/libexec/c-lightning/plugins"
+      - "--alias=nifty"
+      - "--log-level=debug"
+      - "--bind-addr=0.0.0.0:9735"
 
   rusty:
     image: elementsproject/lightningd:v24.11.1
     container_name: rusty
     restart: unless-stopped
     ports:
-      - 9747:9735
+      - "9748:9735"
     networks:
       - regtest
     volumes:
@@ -392,6 +413,28 @@ services:
       - "--log-level=debug"
       - "--bind-addr=0.0.0.0:9735"
 
+  snyke:
+    image: elementsproject/lightningd:v24.11.1
+    container_name: snyke
+    restart: unless-stopped
+    ports:
+      - "9749:9735"
+    networks:
+      - regtest
+    volumes:
+      - "snyke:/root/.lightning"
+    depends_on:
+      - bitcoind
+    command:
+      - "--bitcoin-rpcconnect=bitcoind"
+      - "--bitcoin-rpcuser=lightning"
+      - "--bitcoin-rpcpassword=lightning"
+      - "--network=regtest"
+      - "--plugin-dir=/usr/libexec/c-lightning/plugins"
+      - "--alias=snyke"
+      - "--log-level=debug"
+      - "--bind-addr=0.0.0.0:9735"
+
 networks:
   regtest:
 
@@ -403,4 +446,6 @@ volumes:
   dave:
   erin:
   fabia:
+  nifty:
   rusty:
+  snyke:

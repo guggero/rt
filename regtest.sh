@@ -58,7 +58,9 @@ function connectnodes() {
   DAVE=$(reg_dave getinfo | jq .identity_pubkey -r)
   ERIN=$(reg_erin getinfo | jq .identity_pubkey -r)
   FABIA=$(reg_fabia getinfo | jq .identity_pubkey -r)
+  NIFTY=$(reg_nifty getinfo | jq .id -r)
   RUSTY=$(reg_rusty getinfo | jq .id -r)
+  SNYKE=$(reg_snyke getinfo | jq .id -r)
 
   echo "Alice:   $ALICE"
   echo "Bob:     $BOB"
@@ -66,7 +68,9 @@ function connectnodes() {
   echo "Dave:    $DAVE"
   echo "Erin:    $ERIN"
   echo "Fabia:   $FABIA"
+  echo "Nifty:   $NIFTY"
   echo "Rusty:   $RUSTY"
+  echo "Snyke:   $SNYKE"
 
   # Connect up all the nodes.
   reg_alice connect "$BOB"@bob:9735
@@ -74,34 +78,48 @@ function connectnodes() {
   reg_alice connect "$DAVE"@dave:9735
   reg_alice connect "$ERIN"@erin:9735
   reg_alice connect "$FABIA"@fabia:9735
+  reg_alice connect "$NIFTY"@nifty:9735
   reg_alice connect "$RUSTY"@rusty:9735
+  reg_alice connect "$SNYKE"@snyke:9735
   reg_bob connect "$CHARLIE"@charlie:9735
   reg_bob connect "$DAVE"@dave:9735
   reg_bob connect "$ERIN"@erin:9735
   reg_bob connect "$FABIA"@fabia:9735
+  reg_bob connect "$NIFTY"@nifty:9735
   reg_bob connect "$RUSTY"@rusty:9735
+  reg_bob connect "$SNYKE"@snyke:9735
   reg_charlie connect "$DAVE"@dave:9735
   reg_charlie connect "$ERIN"@erin:9735
   reg_charlie connect "$FABIA"@fabia:9735
+  reg_charlie connect "$NIFTY"@nifty:9735
   reg_charlie connect "$RUSTY"@rusty:9735
+  reg_charlie connect "$SNYKE"@snyke:9735
   reg_dave connect "$ERIN"@erin:9735
   reg_dave connect "$FABIA"@fabia:9735
   reg_dave connect "$RUSTY"@rusty:9735
   reg_erin connect "$FABIA"@fabia:9735
+  reg_erin connect "$NIFTY"@nifty:9735
   reg_erin connect "$RUSTY"@rusty:9735
+  reg_erin connect "$SNYKE"@snyke:9735
+  reg_fabia connect "$NIFTY"@nifty:9735
   reg_fabia connect "$RUSTY"@rusty:9735
+  reg_fabia connect "$SNYKE"@snyke:9735
 }
 
 function fund() {
-  echo "Sending 5 BTC to $1"
-  ADDR=$(reg_$1 newaddress p2wkh | jq .address -r)
-  reg_bitcoin sendtoaddress "$ADDR" 5
-}
-
-function fundcln() {
-    echo "Sending 5 BTC to $1"
-    ADDR=$(reg_$1 newaddr bech32 | jq .bech32 -r)
-    reg_bitcoin sendtoaddress "$ADDR" 5
+  COINS=${1:-5}
+  
+  case $1 in
+    nifty | Nifty | rusty | Rusty | snyke | Snyke)
+      ADDR=$(reg_$1 newaddr bech32 | jq .bech32 -r)
+      ;;
+    *)
+      ADDR=$(reg_$1 newaddress p2wkh | jq .address -r)
+      ;;
+  esac
+  
+  echo "Sending ${COINS} BTC to $1 (address $ADDR)"
+  reg_bitcoin sendtoaddress "$ADDR" $COINS
 }
 
 function sendfunds() {
@@ -112,7 +130,9 @@ function sendfunds() {
   fund dave
   fund erin
   fund fabia
-  fundcln rusty
+  fund nifty
+  fund rusty
+  fund snyke
 }
 
 function setup() {
@@ -137,6 +157,16 @@ function waitnode() {
   done
 }
 
+function waitnodecln() {
+    while ! reg_$1 getinfo | grep -q \"id\"; do
+      sleep 1
+    done
+    BLOCKS=$(reg_bitcoin getblockchaininfo | jq .blocks -r)
+    while [[ $(reg_$1 getinfo | jq .blockheight -r | xargs) -lt $BLOCKS ]]; do
+      sleep 1
+    done
+}
+
 function waitnodestart() {
   waitnode alice
   waitnode bob
@@ -144,13 +174,9 @@ function waitnodestart() {
   waitnode dave
   waitnode erin
   waitnode fabia
-  while ! reg_rusty getinfo | grep -q \"id\"; do
-    sleep 1
-  done
-  BLOCKS=$(reg_bitcoin getblockchaininfo | jq .blocks -r)
-  while [[ $(reg_rusty getinfo | jq .blockheight -r | xargs) -lt $BLOCKS ]]; do
-    sleep 1
-  done
+  waitnodecln nifty
+  waitnodecln rusty
+  waitnodecln snyke
 }
 
 function start() {
@@ -182,26 +208,36 @@ function info() {
   DAVE=$(reg_dave getinfo | jq -c '{pubkey: .identity_pubkey, channels: .num_active_channels, peers: .num_peers}')
   ERIN=$(reg_erin getinfo | jq -c '{pubkey: .identity_pubkey, channels: .num_active_channels, peers: .num_peers}')
   FABIA=$(reg_fabia getinfo | jq -c '{pubkey: .identity_pubkey, channels: .num_active_channels, peers: .num_peers}')
+  NIFTY=$(reg_nifty getinfo | jq .id -r)
   RUSTY=$(reg_rusty getinfo | jq .id -r)
+  SNYKE=$(reg_snyke getinfo | jq .id -r)
   echo "Alice:   $ALICE"
   echo "Bob:     $BOB"
   echo "Charlie: $CHARLIE"
   echo "Dave:    $DAVE"
   echo "Erin:    $ERIN"
   echo "Fabia:   $FABIA"
+  echo "Nifty:   $NIFTY"
   echo "Rusty:   $RUSTY"
+  echo "Snyke:   $SNYKE"
 }
 
-if [ $# -lt 1 ]
+if [[ $# -lt 1 ]]
 then
   echo "Usage: $0 start|stop|restart|setup|info"
+  exit
 fi
 
 CMD=$1
 shift
 
+if [[ "$CMD" == "help" ]]; then
+  echo "Usage: $0 start|stop|restart|help|info|fund|mine"
+  exit
+fi
+
 # Translate calls to "rt <node>" to the "reg_<node>" function.
-NODES=("bitcoin alice alice_lit bob bob_lit charlie dave erin fabia rusty")
+NODES=("bitcoin alice alice_lit bob bob_lit charlie dave erin fabia nifty rusty snyke")
 if [[ "${NODES[*]}" =~ "$CMD" ]]; then
   reg_$CMD "$@"
   exit
