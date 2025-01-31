@@ -15,16 +15,24 @@ function reg_alice() {
   docker exec -ti alice lncli --network regtest "$@"
 }
 
-function reg_alice_lit() {
+function reg_alice_litcli() {
   docker exec -ti alice litcli --network regtest "$@"
+}
+
+function reg_alice_loop() {
+  docker exec -ti alice loop --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --loopdir /root/.loop "$@"
 }
 
 function reg_bob() {
   docker exec -ti bob lncli --network regtest "$@"
 }
 
-function reg_bob_lit() {
+function reg_bob_litcli() {
   docker exec -ti bob litcli --network regtest "$@"
+}
+
+function reg_bob_loop() {
+  docker exec -ti bob loop --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --loopdir /root/.loop "$@"
 }
 
 function reg_charlie() {

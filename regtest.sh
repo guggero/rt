@@ -239,7 +239,8 @@ if [[ "$CMD" == "help" ]]; then
 fi
 
 # Translate calls to "rt <node>" to the "reg_<node>" function.
-NODES=("bitcoin alice alice_lit bob bob_lit charlie dave erin fabia nifty rusty snyke")
+NODES=("bitcoin alice alice_litcli alice_loop bob bob_litcli bob_loop charlie \
+dave erin fabia nifty rusty snyke")
 if [[ "${NODES[*]}" =~ "$CMD" ]]; then
   reg_$CMD "$@"
   exit
