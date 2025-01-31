@@ -41,6 +41,8 @@ function copymacaroons() {
 
   docker cp fabia:/root/.lnd/data/chain/bitcoin/regtest/. "$DATA_DIR"/fabia/
   docker cp fabia:/root/.lnd/tls.cert "$DATA_DIR"/fabia/tls.cert
+  
+  chmod -R 777 "$DATA_DIR"
 }
 
 function mine() {
@@ -107,7 +109,7 @@ function connectnodes() {
 }
 
 function fund() {
-  COINS=${1:-5}
+  COINS=${2:-5}
   
   case $1 in
     nifty | Nifty | rusty | Rusty | snyke | Snyke)

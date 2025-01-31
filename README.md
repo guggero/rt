@@ -42,6 +42,51 @@
   + Nifty ports: 9747 (p2p)
   + Rusty ports: 9748 (p2p)
   + Snyke ports: 9749 (p2p)
+* 1 Loop server, connected to Fabia
+  + Port(s): 11009 (gRPC)
+
+```mermaid
+graph TD;
+    subgraph Bitcoin Network
+        bitcoind[bitcoind]
+        esplora[Esplora]
+
+        subgraph LITD Nodes
+          litd_alice[Alice]
+          litd_bob[Bob]
+        end
+  
+        subgraph LND Nodes
+          lnd_charlie[Charlie]
+          lnd_dave[Dave]
+          lnd_erin[Erin]
+          lnd_fabia[Fabia]
+  
+          loop_server[Loop Server]
+        end
+  
+        subgraph CLN Nodes
+          cln_nifty[Nifty]
+          cln_rusty[Rusty]
+          cln_snyke[Snyke]
+        end
+    end
+
+    %% Connections
+    bitcoind <-- RPC/ZMQ --> esplora
+    bitcoind <-- RPC --> litd_alice
+    bitcoind <-- RPC --> litd_bob
+    bitcoind <-- RPC --> lnd_charlie
+    bitcoind <-- RPC --> lnd_dave
+    bitcoind <-- RPC --> lnd_erin
+    bitcoind <-- RPC --> lnd_fabia
+    bitcoind <-- RPC --> cln_nifty
+    bitcoind <-- RPC --> cln_rusty
+    bitcoind <-- RPC --> cln_snyke
+
+    lnd_fabia <-- gRPC --> loop_server
+
+```
 
 ## Usage
 

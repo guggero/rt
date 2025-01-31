@@ -1,7 +1,7 @@
 version: '3'
 services:
   bitcoind:
-    image: lightninglabs/bitcoin-core:28
+    image: lightninglabs/bitcoin-core:26
     container_name: bitcoind
     restart: unless-stopped
     ports:
@@ -134,7 +134,7 @@ services:
       - "--lnd.protocol.simple-taproot-chans"
       - "--lnd.protocol.simple-taproot-overlay-chans"
       - "--lnd.accept-keysend"
-      - "--loop.server.host=[::]:11009"
+      - "--loop.server.host=loopserver:11009"
       - "--loop.server.notls"
       - "--pool.auctionserver=localhost:12009"
       - "--pool.tlspathauctserver=/home/guggero/.auctionserver/tls.cert"
@@ -195,7 +195,7 @@ services:
       - "--lnd.protocol.simple-taproot-chans"
       - "--lnd.protocol.simple-taproot-overlay-chans"
       - "--lnd.accept-keysend"
-      - "--loop.server.host=[::]:11009"
+      - "--loop.server.host=loopserver:11009"
       - "--loop.server.notls"
       - "--pool.auctionserver=localhost:12009"
       - "--pool.tlspathauctserver=/home/guggero/.auctionserver/tls.cert"
@@ -434,6 +434,30 @@ services:
       - "--alias=snyke"
       - "--log-level=debug"
       - "--bind-addr=0.0.0.0:9735"
+
+  loopserver:
+    image: lightninglabs/loopserver:latest
+    container_name: loopserver
+    restart: unless-stopped
+    ports:
+      - "11009:11009"
+    networks:
+      - regtest
+    volumes:
+      - ./data/fabia:/tmp
+    depends_on:
+      - fabia
+    command:
+      - "daemon"
+      - "--maxamt=5000000"
+      - "--bitcoin.host=bitcoind:18443"
+      - "--bitcoin.user=lightning"
+      - "--bitcoin.password=lightning"
+      - "--bitcoin.zmqpubrawblock=tcp://bitcoind:28332"
+      - "--bitcoin.zmqpubrawtx=tcp://bitcoind:28333"
+      - "--lnd.host=fabia:10009"
+      - "--lnd.macaroondir=/tmp"
+      - "--lnd.tlspath=/tmp/tls.cert"
 
 networks:
   regtest:
