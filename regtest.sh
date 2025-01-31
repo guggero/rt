@@ -124,19 +124,6 @@ function fund() {
   reg_bitcoin sendtoaddress "$ADDR" $COINS
 }
 
-function sendfunds() {
-  echo "Sending funds to all nodes..."
-  fund alice
-  fund bob
-  fund charlie
-  fund dave
-  fund erin
-  fund fabia
-  fund nifty
-  fund rusty
-  fund snyke
-}
-
 function setup() {
   echo "Creating wallet..."
   reg_bitcoin createwallet miner
@@ -145,8 +132,6 @@ function setup() {
   echo "Generating blocks to $ADDR_BTC"
   reg_bitcoin generatetoaddress 106 "$ADDR_BTC" > /dev/null
   reg_bitcoin getbalance
-
-  sendfunds
 
   connectnodes
 

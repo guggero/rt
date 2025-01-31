@@ -30,7 +30,7 @@
   + Port(s): 18443 (RPC, regtest default), 28332,28333 (ZMQ)
 * Esplora block explorer
   + Port(s): 3002 (web, default)
-* 2 `litd` nodes:
+* 2 `litd` nodes (bundles `lnd`, `loop` and `taproot-assets`):
   + Alice ports: 10011 (gRPC), 9741 (p2p), 8091 (REST), 8443 (lit)
   + Bob   ports: 10012 (gRPC), 9742 (p2p), 8092 (REST), 8444 (lit)
 * 4 `lnd` nodes:
@@ -90,10 +90,34 @@ graph TD;
 
 ## Usage
 
-* `rt help`: Show available commands
+General helper commands:
+
+* `rt help`: Show available helper commands
 * `rt info`: Show network information
-* `rt fund <node> <x>`: Send `<x>` BTC to `<node>` on-chain
+* `rt fund <node> <x>`: Send `<x>` regtest BTC to `<node>` on-chain
 * `rt mine <x>`: Mine `x` blocks. If `x` is not specified, mines 6 blocks by default
 * `rt start`: Start everything
 * `rt restart`: Restart everything, completely wiping all data
 * `rt stop`: Stop and remove everything
+
+Node interaction:
+ * `rt <node> <command> [args...]`: Interact with a node.
+    + Help:
+       + `rt <node> --help`
+       + `rt <node> <subcommand> --help`
+    + Examples:
+       + `rt alice getinfo` (equivalent of `lncli getinfo` inside the `alice` container)
+       + `rt rusty getinfo` (equivalent of `lightning-cli getinfo` inside the `rusty` container)
+ * `rt <node>_litcli <command> [args...]`: Interact with a `litd` node (Alice or Bob) using the `litcli` command line tool.
+    + Help:
+       + `rt <node>_litcli --help`
+       + `rt <node>_litcli <subcommand> --help`
+    + Examples:
+       + `rt alice_litcli ln fundchannel ...` (equivalent of `litcli ln fundchannel ...` inside the `alice` container)
+ * `rt <node>_loop <command> [args...]`: Interact with a `litd` node (Alice or Bob) using the `loop` command line tool.
+   + Help:
+       + `rt <node>_loop --help`
+       + `rt <node>_loop <subcommand> --help`
+   + Example:
+       + `rt bob_loop out monitor` (equivalent of `loop out monitor` inside the `bob` container)
+ 
