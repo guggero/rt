@@ -23,6 +23,10 @@ function reg_alice_loop() {
   docker exec -ti alice loop --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --loopdir /root/.loop "$@"
 }
 
+function reg_alice_tapcli() {
+  docker exec -ti alice tapcli --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --tapddir /root/.tapd "$@"
+}
+
 function reg_bob() {
   docker exec -ti bob lncli --network regtest "$@"
 }
@@ -33,6 +37,10 @@ function reg_bob_litcli() {
 
 function reg_bob_loop() {
   docker exec -ti bob loop --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --loopdir /root/.loop "$@"
+}
+
+function reg_bob_tapcli() {
+  docker exec -ti bob tapcli --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --tapddir /root/.tapd "$@"
 }
 
 function reg_charlie() {

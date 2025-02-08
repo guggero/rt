@@ -120,4 +120,9 @@ Node interaction:
        + `rt <node>_loop <subcommand> --help`
    + Example:
        + `rt bob_loop out monitor` (equivalent of `loop out monitor` inside the `bob` container)
- 
+* `rt <node>_tapcli <command> [args...]`: Interact with a `tapd` node (Alice or Bob) using the `tapcli` command line tool.
++ Help:
+    + `rt <node>_tapcli --help`
+    + `rt <node>_tapcli <subcommand> --help`
++ Example:
+    + `rt bob_tapcli assets list` (equivalent of `tapcli assets list` inside the `bob` container)

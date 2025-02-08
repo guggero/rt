@@ -98,7 +98,9 @@ function connectnodes() {
   reg_charlie connect "$SNYKE"@snyke:9735
   reg_dave connect "$ERIN"@erin:9735
   reg_dave connect "$FABIA"@fabia:9735
+  reg_dave connect "$NIFTY"@nifty:9735
   reg_dave connect "$RUSTY"@rusty:9735
+  reg_dave connect "$SNYKE"@snyke:9735
   reg_erin connect "$FABIA"@fabia:9735
   reg_erin connect "$NIFTY"@nifty:9735
   reg_erin connect "$RUSTY"@rusty:9735
@@ -224,8 +226,8 @@ if [[ "$CMD" == "help" ]]; then
 fi
 
 # Translate calls to "rt <node>" to the "reg_<node>" function.
-NODES=("bitcoin alice alice_litcli alice_loop bob bob_litcli bob_loop charlie \
-dave erin fabia nifty rusty snyke")
+NODES=("bitcoin alice alice_litcli alice_loop alice_tapcli bob bob_litcli
+bob_loop bob_tapcli charlie dave erin fabia nifty rusty snyke")
 if [[ "${NODES[*]}" =~ "$CMD" ]]; then
   reg_$CMD "$@"
   exit

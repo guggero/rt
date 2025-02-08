@@ -129,6 +129,7 @@ services:
       - "--lnd.accept-keysend"
       - "--lnd.debuglevel=trace,SRVR=debug,PEER=info,BTCN=warn"
       - "--lnd.rpcmiddleware.enable"
+      - "--lnd.protocol.wumbo-channels"
       - "--lnd.protocol.option-scid-alias"
       - "--lnd.protocol.zero-conf"
       - "--lnd.protocol.simple-taproot-chans"
@@ -140,6 +141,7 @@ services:
       - "--pool.tlspathauctserver=/home/guggero/.auctionserver/tls.cert"
       - "--pool.fakeauth"
       - "--autopilot.disable"
+      - "--taproot-assets.proofcourieraddr=universerpc://localhost:8443"
       - "--taproot-assets.universe.public-access=rw"
       - "--taproot-assets.universe.sync-all-assets"
       - "--taproot-assets.universerpccourier.initialbackoff=2s"
@@ -190,6 +192,7 @@ services:
       - "--lnd.accept-keysend"
       - "--lnd.debuglevel=trace,SRVR=debug,PEER=info,BTCN=warn"
       - "--lnd.rpcmiddleware.enable"
+      - "--lnd.protocol.wumbo-channels"
       - "--lnd.protocol.option-scid-alias"
       - "--lnd.protocol.zero-conf"
       - "--lnd.protocol.simple-taproot-chans"
@@ -201,6 +204,7 @@ services:
       - "--pool.tlspathauctserver=/home/guggero/.auctionserver/tls.cert"
       - "--pool.fakeauth"
       - "--autopilot.disable"
+      - "--taproot-assets.proofcourieraddr=universerpc://localhost:8443"
       - "--taproot-assets.universe.public-access=rw"
       - "--taproot-assets.universe.sync-all-assets"
       - "--taproot-assets.universerpccourier.initialbackoff=2s"
@@ -247,6 +251,7 @@ services:
       - "--externalip=charlie"
       - "--tlsextradomain=charlie"
       - "--accept-keysend"
+      - "--protocol.wumbo-channels"
 
 
   dave:
@@ -284,6 +289,7 @@ services:
       - "--externalip=dave"
       - "--tlsextradomain=dave"
       - "--accept-keysend"
+      - "--protocol.wumbo-channels"
 
 
   erin:

@@ -67,11 +67,8 @@ graph TD;
 
     %% Channels
     litd_alice -- "1 BTC : 0 BTC" --> litd_bob
-    litd_bob -- "1 BTC : 0 BTC" --> lnd_charlie
     litd_bob -- "1 BTC : 0 BTC" --> cln_nifty
-    lnd_charlie -- "1 BTC : 0 BTC" --> cln_rusty
     cln_nifty -- "1 BTC : 0 BTC" --> lnd_dave
-    cln_rusty -- "1 BTC : 0 BTC" --> lnd_fabia
     lnd_dave -- "1 BTC : 0 BTC" --> lnd_fabia
     
     lnd_fabia -- "1 BTC : 0 BTC" --> cln_snyke
@@ -98,12 +95,12 @@ For example, if we assume Rusty is operating an online shop and Alice wants to
 buy something from him, let's create an invoice for that and pay it.
 
 Sub tasks:
- - Find out how to create an invoice on Rusty.
+ - Find out how to create an invoice on Fabia.
  - Find out how to pay the invoice on Alice.
  - Once the payment is successful, can you find out what path it took?
  - Confirm the channel balances on the nodes the payment went through.
  - How much was paid in fees? What nodes received routing fees?
- - What's the state of the invoice on Rusty after payment?
+ - What's the state of the invoice on Fabia after payment?
  - What's the state of the payment on Alice after it went through?
 
 # 4. Send payment through the network with keysend
@@ -132,10 +129,80 @@ Sub tasks:
  - Just from looking at the initial channel graph, what path do you expect the
    payment to take?
  - Can you confirm the payment actually took that route?
+ - How much did Alice have to pay in fees?
 
 # 6. Reduce hot wallet risk by looping out
 
+Alice still has a large amount of Satoshi locked in her channel with Bob. She
+feels like she wants to reduce the risk of keeping as many Satoshi in a channel.
+And since she is operating an online shop, she mostly needs inbound capacity
+anyway. So she decides to "loop" some of the funds out of her channel, to get
+the funds back on-chain.
 
+You can interact with the integrated Loop service through the `rt <node>_loop`
+command.
+
+Hint: The Loop service by default batches on-chain payments, so it can take up
+to 30 minutes for a swap to be initiated. To request an immediate swap, you
+might want to use the `--fast` flag.
+Make sure to also use `rt alice_loop monitor` to check on the progres of the
+swap. Some actions might need you to mine a block to proceed.
+
+Sub tasks:
+ - Find out how to use the Loop service integrated into `litd` on Alice's node
+   to get a large portion of her channel outbound capacity back on-chain.
+ - How many transactions did the loop involve?
+ - How much in service fees did Alice have to pay?
 
 # 7. Bonus: mint an asset on Alice
+
+The two `litd` nodes Alice and Bob have the Taproot Assets Protocol daemon
+`tapd` integrated, which means they are set up to be able to mint custom assets
+and commit them into Lightning channels.
+
+Make sure you give the [first steps
+documentation](https://docs.lightning.engineering/lightning-network-tools/taproot-assets/first-steps)
+a quick glance before proceeding.
+
+You can interact with the integrated `tapd` service through the
+`rt <node>_tapcli` command.
+
+The price oracle that's set up in this regtest environment is configured to deal
+with BTC to asset exchange rates measured in cents per BTC. Therefore, it is
+recommended to mint the assets in a way that they represent fractions with two
+decimal places (e.g. 100 cents in a dollar). That can be achieved by setting the
+`--decimal_display 2` parameter when minting.
+
+Sub tasks:
+ - Find out how to mint your own USD/CHF/EUR token on Alice.
+ - Inspect the minted token in the command line and the minting transaction in
+   the block explorer.
+ - Create a TAP address on Bob and send some of the minted asset units to Bob.
+
 # 8. Bonus: create an asset channel between Alice and Bob, pay an invoice from Alice
+
+Bob agrees to be a spot exchange for Alice, so she can spend her tokens over
+Lightning through Bob, who converts the tokens to Satoshi on the fly. That means
+Bob will be acting as an edge node, bridging Alice's token channel to the wider
+BTC only Lightning Network.
+
+Interacting with Taproot Assets and the Lightning Network, the special
+`rt <node>_litcli ln` subcommand needs to be used.
+
+The goal is to create an asset channel from Alice to Bob, then use that channel
+to pay invoices or receive payments.
+
+Sub tasks:
+ - Create an asset channel between Alice and Bob, using
+  `rt alice_litcli ln openchannel`.
+ - Inspect the asset channel with `rt alice listchannels`, what's special about
+   it?
+ - Use assets to pay a BTC invoice from another node on the network (e.g. Snyke,
+   Dave or Fabia). Make sure to use `rt alice_litcli ln payinvoice`.
+ - How does the asset payment look like on Alice?
+ - What exchange rate did Bob use to convert between assets and BTC?
+ - What token/units did the receiver get?
+ - Try the other way around: Create an asset based invoice on Alice (using
+   `rt alice_litcli ln addinvoice`) and pay it with any other, BTC only node.
+ - Is there anything special about the asset invoice?
+
