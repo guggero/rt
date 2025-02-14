@@ -6,7 +6,7 @@
 
   ```shell
   # We assume this will be cloned to $HOME/rt.
-  $ git clone git@github.com:guggero/rt.git
+  $ git clone https://github.com/guggero/rt.git
   $ chmod +x rt/regtest.sh
   ```
 * (optional) create an alias for easy execution (might require `sudo`):
