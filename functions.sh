@@ -7,66 +7,72 @@
 # script (symlinked to /usr/local/bin/rt), you can drop the `reg_` prefix from
 # the commands. So you can just type `rt bitcoin` instead of `reg_bitcoin`.
 
+TTY_FLAG="-ti"
+
+if [ "$NOTTY" = "1" ]; then
+  TTY_FLAG=""
+fi
+
 function reg_bitcoin() {
-  docker exec -ti -u bitcoin bitcoind bitcoin-cli -regtest -rpcuser=lightning -rpcpassword=lightning "$@"
+  docker exec $TTY_FLAG -u bitcoin bitcoind bitcoin-cli -regtest -rpcuser=lightning -rpcpassword=lightning "$@"
 }
 
 function reg_alice() {
-  docker exec -ti alice lncli --network regtest "$@"
+  docker exec $TTY_FLAG alice lncli --network regtest "$@"
 }
 
 function reg_alice_litcli() {
-  docker exec -ti alice litcli --network regtest "$@"
+  docker exec $TTY_FLAG alice litcli --network regtest "$@"
 }
 
 function reg_alice_loop() {
-  docker exec -ti alice loop --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --loopdir /root/.loop "$@"
+  docker exec $TTY_FLAG alice loop --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --loopdir /root/.loop "$@"
 }
 
 function reg_alice_tapcli() {
-  docker exec -ti alice tapcli --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --tapddir /root/.tapd "$@"
+  docker exec $TTY_FLAG alice tapcli --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --tapddir /root/.tapd "$@"
 }
 
 function reg_bob() {
-  docker exec -ti bob lncli --network regtest "$@"
+  docker exec $TTY_FLAG bob lncli --network regtest "$@"
 }
 
 function reg_bob_litcli() {
-  docker exec -ti bob litcli --network regtest "$@"
+  docker exec $TTY_FLAG bob litcli --network regtest "$@"
 }
 
 function reg_bob_loop() {
-  docker exec -ti bob loop --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --loopdir /root/.loop "$@"
+  docker exec $TTY_FLAG bob loop --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --loopdir /root/.loop "$@"
 }
 
 function reg_bob_tapcli() {
-  docker exec -ti bob tapcli --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --tapddir /root/.tapd "$@"
+  docker exec $TTY_FLAG bob tapcli --network regtest --rpcserver localhost:8443 --tlscertpath /root/.lit/tls.cert --tapddir /root/.tapd "$@"
 }
 
 function reg_charlie() {
-  docker exec -ti charlie lncli --network regtest "$@"
+  docker exec $TTY_FLAG charlie lncli --network regtest "$@"
 }
 
 function reg_dave() {
-  docker exec -ti dave lncli --network regtest "$@"
+  docker exec $TTY_FLAG dave lncli --network regtest "$@"
 }
 
 function reg_erin() {
-  docker exec -ti erin lncli --network regtest "$@"
+  docker exec $TTY_FLAG erin lncli --network regtest "$@"
 }
 
 function reg_fabia() {
-  docker exec -ti fabia lncli --network regtest "$@"
+  docker exec $TTY_FLAG fabia lncli --network regtest "$@"
 }
 
 function reg_nifty() {
-  docker exec -ti nifty lightning-cli --network regtest "$@"
+  docker exec $TTY_FLAG nifty lightning-cli --network regtest "$@"
 }
 
 function reg_rusty() {
-  docker exec -ti rusty lightning-cli --network regtest "$@"
+  docker exec $TTY_FLAG rusty lightning-cli --network regtest "$@"
 }
 
 function reg_snyke() {
-  docker exec -ti snyke lightning-cli --network regtest "$@"
+  docker exec $TTY_FLAG snyke lightning-cli --network regtest "$@"
 }
