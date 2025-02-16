@@ -169,10 +169,6 @@ function waitnodestart() {
 }
 
 function start() {
-  pushd "$DIR" || exit
-  # shellcheck source=/dev/null
-  source ./pg-cert.sh
-  popd || exit
   DATA_DIR=${DATA_DIR} $COMPOSE up --force-recreate -d
   echo "Waiting for all nodes to start..."
   waitnodestart
@@ -200,29 +196,47 @@ function info() {
   NIFTY=$(reg_nifty getinfo | jq .id -r)
   RUSTY=$(reg_rusty getinfo | jq .id -r)
   SNYKE=$(reg_snyke getinfo | jq .id -r)
-  echo "Alice:   $ALICE"
-  echo "Bob:     $BOB"
-  echo "Charlie: $CHARLIE"
-  echo "Dave:    $DAVE"
-  echo "Erin:    $ERIN"
-  echo "Fabia:   $FABIA"
-  echo "Nifty:   $NIFTY"
-  echo "Rusty:   $RUSTY"
-  echo "Snyke:   $SNYKE"
+  echo "alice:   $ALICE"
+  echo "bob:     $BOB"
+  echo "charlie: $CHARLIE"
+  echo "dave:    $DAVE"
+  echo "erin:    $ERIN"
+  echo "fabia:   $FABIA"
+  echo "nifty:   $NIFTY"
+  echo "rusty:   $RUSTY"
+  echo "snyke:   $SNYKE"
+}
+
+function usage() {
+    echo "Usage: $0 start|stop|restart|help|info|fund|mine"
+    echo ''
+    echo 'rt help:                Show available helper commands'
+    echo 'rt info:                Show network information'
+    echo 'rt fund <node> <x>`:    Send `<x>` regtest BTC to `<node>` on-chain'
+    echo 'rt mine <x>`:           Mine `x` blocks. If `x` is not specified, mines 6 blocks by default'
+    echo 'rt start:               Start everything'
+    echo 'rt restart:             Restart everything, completely wiping all data'
+    echo 'rt stop:                Stop and remove everything'
+    echo ''
+    echo 'rt alice --help:        Show all available commands for lnd (lncli --help)'
+    echo 'rt alice_litcli --help: Show all available commands for litd (litcli --help)'
+    echo 'rt alice_loop --help:   Show all available commands for loop (loop --help)'
+    echo 'rt alice_tapcli --help: Show all available commands for tapd (tapcli --help)'
+    echo ''
+    echo 'rt nifty help:          Show all available commands for CLN (lightning-cli help)'
+    exit
 }
 
 if [[ $# -lt 1 ]]
 then
-  echo "Usage: $0 start|stop|restart|setup|info"
-  exit
+  usage
 fi
 
 CMD=$1
 shift
 
 if [[ "$CMD" == "help" ]]; then
-  echo "Usage: $0 start|stop|restart|help|info|fund|mine"
-  exit
+  usage
 fi
 
 # Translate calls to "rt <node>" to the "reg_<node>" function.

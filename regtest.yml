@@ -35,7 +35,7 @@ services:
 
 
   electrs:
-    image: guggero/electrs
+    image: mempool/electrs
     container_name: electrs
     restart: unless-stopped
     ports:
@@ -50,7 +50,6 @@ services:
     depends_on:
       - bitcoind
     command:
-      - electrs
       - "-vvv"
       - "--timestamp"
       - "--network=regtest"
@@ -73,24 +72,14 @@ services:
     environment:
       - API_URL=http://localhost:3004/
       - NODE_ENV=production
-
-
-  timescale:
-    image: timescaledev/timescaledb-ha:pg12-latest
-    container_name: timescale
-    restart: unless-stopped
-    command: -c ssl=on -c ssl_cert_file=/temp/cert/server.crt -c ssl_key_file=/temp/cert/server.key
-    ports:
-      - "5432:5432/tcp"
-    env_file:
-      - database.env
-    volumes:
-      - ./pg-init:/docker-entrypoint-initdb.d
-      - ./pg-cert:/temp/cert
+    command:
+      - "npm"
+      - "run"
+      - "dev-server"
 
 
   alice:
-    image: lightninglabs/lightning-terminal:v0.14.0-alpha
+    image: lightninglabs/lightning-terminal:v0.14.1-alpha
     container_name: alice 
     restart: unless-stopped
     ports:
@@ -153,7 +142,7 @@ services:
 
 
   bob:
-    image: lightninglabs/lightning-terminal:v0.14.0-alpha
+    image: lightninglabs/lightning-terminal:v0.14.1-alpha
     container_name: bob 
     restart: unless-stopped
     ports:
@@ -217,7 +206,7 @@ services:
 
 
   charlie:
-    image: lightninglabs/lnd:v0.18.4-beta
+    image: lightninglabs/lnd:v0.18.5-beta
     container_name: charlie 
     restart: unless-stopped
     ports:
@@ -255,7 +244,7 @@ services:
 
 
   dave:
-    image: lightninglabs/lnd:v0.18.4-beta
+    image: lightninglabs/lnd:v0.18.5-beta
     container_name: dave 
     restart: unless-stopped
     ports:
@@ -293,7 +282,7 @@ services:
 
 
   erin:
-    image: lightninglabs/lnd:v0.18.4-beta
+    image: lightninglabs/lnd:v0.18.5-beta
     container_name: erin
     restart: unless-stopped
     ports:
@@ -335,7 +324,7 @@ services:
 
 
   fabia:
-    image: lightninglabs/lnd:v0.18.4-beta
+    image: lightninglabs/lnd:v0.18.5-beta
     container_name: fabia
     restart: unless-stopped
     ports:
